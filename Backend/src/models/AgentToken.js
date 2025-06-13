@@ -24,4 +24,4 @@ const TokenAgentSchema = new mongoose.Schema({
     }
 },{timestamps:true})
 
-module.exports = mongoose.model('Token' , TokenAgentSchema)
+module.exports = mongoose.model('AgentToken' , TokenAgentSchema)

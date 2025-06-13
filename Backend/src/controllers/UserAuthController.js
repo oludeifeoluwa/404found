@@ -107,7 +107,11 @@ const login = async (req, res) => {
       throw new CustomError.UnauthenticatedError("invalid credentials");
     }
     refreshToken = existingToken.refreshToken;
-    attachCookiesToResponse({ res,payload :{user: tokenUser}, refreshToken });
+    attachCookiesToResponse({
+      res,
+      payload: { user: tokenUser },
+      refreshToken,
+    });
     res.status(StatusCodes.OK).json({ user: tokenUser });
     return;
   }
@@ -117,7 +121,7 @@ const login = async (req, res) => {
   const userToken = { refreshToken, userAgent, ip, user: user._id };
   await Token.create(userToken);
 
-  attachCookiesToResponse({ res, payload: {user: tokenUser} , refreshToken });
+  attachCookiesToResponse({ res, payload: { user: tokenUser }, refreshToken });
   res.status(StatusCodes.OK).json({ user: tokenUser });
 };
 
@@ -134,13 +138,10 @@ const logout = async (req, res) => {
   res.status(StatusCodes.OK).json({ msg: "user logged out" });
 };
 
-
 const forgotPassword = async (req, res) => {
   const { email } = req.body;
   if (!email) {
-    throw new CustomError.BadRequest(
-      "must provide all the required vlues"
-    );
+    throw new CustomError.BadRequest("must provide all the required vlues");
   }
   const user = await User.findOne({ email });
   if (user) {

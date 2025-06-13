@@ -12,39 +12,37 @@ const {
   registerValidator,
   loginValidator,
   verifyValidator,
+  agentRegisterValidator,
 } = require("../validator/authValidate");
 const crypto = require("crypto");
 
 const register = async (req, res) => {
-  const { email, name, password } = req.body;
-  const { error, value } = registerValidator(req.body);
+  const { error, value } = agentRegisterValidator(req.body);
   if (error) {
     console.log(error);
     return res
       .status(StatusCodes.BAD_REQUEST)
-      .json({ msg: error.details.map((details) => details.message) });
+      .json({
+        msg: error.details.map((details) => details.message).join(", "),
+      });
   }
+  const { email, name } = value;
   const emailAlreadyExists = await Agent.findOne({ email });
   if (emailAlreadyExists) {
     throw new CustomError.BadRequest("Email already exists");
   }
-
   const verificationToken = crypto.randomBytes(40).toString("hex");
   const agent = await Agent.create({
-    name,
-    email,
-    password,
+    ...value,
     verificationToken,
-
   });
-  const origin = "http://localhost:3000"; //incase a frontend is created make sure you match this with the name
+  const origin = "http://localhost:3000"; // frontend PORT
   await sendVerificationEmail({
     name: agent.name,
     email: agent.email,
     verificationToken: agent.verificationToken,
     origin,
   });
-
   res
     .status(StatusCodes.CREATED)
     .json({ msg: "check email to verify your account" });
@@ -108,7 +106,11 @@ const login = async (req, res) => {
       throw new CustomError.UnauthenticatedError("invalid credentials");
     }
     refreshToken = existingToken.refreshToken;
-    attachCookiesToResponse({ res, payload:{agent: tokenAgent}, refreshToken });
+    attachCookiesToResponse({
+      res,
+      payload: { agent: tokenAgent },
+      refreshToken,
+    });
     res.status(StatusCodes.OK).json({ user: tokenAgent });
     return;
   }
@@ -118,10 +120,13 @@ const login = async (req, res) => {
   const tokenUserAgent = { refreshToken, userAgent, ip, agent: agent._id };
   await AgentToken.create(tokenUserAgent);
 
-  attachCookiesToResponse({ res, payload :{agent: tokenAgent}, refreshToken });
+  attachCookiesToResponse({
+    res,
+    payload: { agent: tokenAgent },
+    refreshToken,
+  });
   res.status(StatusCodes.OK).json({ user: tokenAgent });
 };
-
 
 const logout = async (req, res) => {
   await AgentToken.findOneAndDelete({ agent: req.user.userId });

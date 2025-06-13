@@ -31,7 +31,7 @@ const AgentSchema = new mongoose.Schema({
     type: String,
     minlength: [2, "name of agency cannnot be less than 2 characters"],
     maxlength: [50, "name cannot be more than 50 characters"],
-    required: [true, "name is required"],
+    required: [true, "name of agency is required"],
     trim: true,
   },
   contact: {

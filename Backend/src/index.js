@@ -17,7 +17,8 @@ const PORT = process.env.PORT || 3000;
 const connectDB = require('./database/connect');
 
 // router
-const authRouter = require('./routes/authRoute')
+const userAuthRouter = require('./routes/userAuthRoute')
+const agentAuthRouter = require('./routes/agentAuthRoute')
 const userRouter = require('./routes/userRoutes')
 
 //middleware
@@ -50,7 +51,8 @@ app.get('/api/v1' , (req,res)=>{
     res.send('Homify')
 })
 
-app.use('/api/v1/auth/user' , authRouter);
+app.use('/api/v1/auth/agent' , agentAuthRouter);
+app.use('/api/v1/auth/user' , userAuthRouter);
 app.use('/api/v1/users' , userRouter);
 
 app.use(notFoundMiddleware)
