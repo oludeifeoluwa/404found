@@ -20,6 +20,7 @@ const connectDB = require('./database/connect');
 const userAuthRouter = require('./routes/userAuthRoute')
 const agentAuthRouter = require('./routes/agentAuthRoute')
 const userRouter = require('./routes/userRoutes')
+const propertyRouter = require('./routes/propertyRouter')
 
 //middleware
 const errorHandlerMiddleware = require('./middleware/error-handler');
@@ -44,8 +45,6 @@ app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 app.use(cookieParser(process.env.JWT_SECRET))
 
-
-
 app.get('/api/v1' , (req,res)=>{
     console.log(req.signedCookies)
     res.send('Homify')
@@ -53,7 +52,8 @@ app.get('/api/v1' , (req,res)=>{
 
 app.use('/api/v1/auth/agent' , agentAuthRouter);
 app.use('/api/v1/auth/user' , userAuthRouter);
-app.use('/api/v1/users' , userRouter);
+app.use('/api/v1/user' , userRouter);
+app.use('/api/v1/property' , propertyRouter)
 
 app.use(notFoundMiddleware)
 app.use(errorHandlerMiddleware);

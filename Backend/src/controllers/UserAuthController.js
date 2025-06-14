@@ -28,7 +28,6 @@ const register = async (req, res) => {
     throw new CustomError.BadRequest("Email already exists");
   }
   // register first user as admin
-
   const isFirstAccount = (await User.countDocuments({})) === 0;
   const role = isFirstAccount ? "admin" : "user";
 
@@ -40,7 +39,7 @@ const register = async (req, res) => {
     role,
     verificationToken,
   });
-  const origin = "http://localhost:3000"; //incase a frontend is created make sure you match this with the name
+  const origin = "http://localhost:3000"; //frontend PORT must match this
   await sendVerificationEmail({
     name: user.name,
     email: user.email,

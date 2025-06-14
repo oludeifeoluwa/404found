@@ -117,7 +117,6 @@ const PropertySchema = new mongoose.Schema({
     waterHeater: { type: Boolean, default: false },
     // Add more features here when IFE thw PM says so
   },
-
   images: {
     type: [String], // array of image URL
     default: [],
@@ -126,5 +125,11 @@ const PropertySchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  agent:{
+    type: mongoose.Schema.Types.ObjectId,
+    ref:'Agent',
+    required:[true,"must be registered as an agent"]
+  }
+  
 });
 module.exports = mongoose.model("Property", PropertySchema);

@@ -20,11 +20,9 @@ const register = async (req, res) => {
   const { error, value } = agentRegisterValidator(req.body);
   if (error) {
     console.log(error);
-    return res
-      .status(StatusCodes.BAD_REQUEST)
-      .json({
-        msg: error.details.map((details) => details.message).join(", "),
-      });
+    return res.status(StatusCodes.BAD_REQUEST).json({
+      msg: error.details.map((details) => details.message).join(", "),
+    });
   }
   const { email, name } = value;
   const emailAlreadyExists = await Agent.findOne({ email });
