@@ -12,8 +12,8 @@ A smart real estate web platform that makes buying a house as intelligent as it 
 
 ## 🛠️ Tech Stack
 - **Frontend:** React / Next.js / Tailwind CSS
-- **Backend:** Node.js / Express / PostgreSQL
-- **Machine Learning:** Python / scikit-learn / TensorFlow
+- **Backend:** Node.js / Express / MongoDB
+- **Machine Learning:** Python / scikit-learn / TensorFlow / PostgreSQL
 - **Deployment:** Docker / GitHub Actions / AWS or Vercel
 
 ## 🤝 Contributors
