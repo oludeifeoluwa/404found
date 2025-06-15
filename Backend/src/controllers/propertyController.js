@@ -31,7 +31,15 @@ const getAllProperties = async (req, res) => {
 const updateProperty = async (req, res) => {
   const { id: propertyId } = req.params;
 
-  const property = await Property.findOneAndUpdate(
+  const property = await Property.findOne({ _id: propertyId })
+  if (!property) {
+    throw new CustomError.NotFoundError(
+      `no property with id ${propertyId} found`
+    );
+  }
+  checkAgentPermissions(req.user.agentId, property.agent.toString());
+
+  const updatedproperty = await Property.findOneAndUpdate(
     { _id: propertyId },
     req.body,
     {
@@ -40,6 +48,7 @@ const updateProperty = async (req, res) => {
     }
   );
   res.status(StatusCodes.OK).json({ property });
+
 };
 
 const deleteProperty = async (req, res) => {
@@ -54,6 +63,7 @@ const deleteProperty = async (req, res) => {
   await property.deleteOne();
   res.status(StatusCodes.OK).json({ msg: "property successfully removed" });
 };
+
 module.exports = {
   createProperty,
   getSingleProperty,
