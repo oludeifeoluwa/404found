@@ -1,0 +1,138 @@
+
+.container {
+  display: flex;
+ align-items: center;
+ justify-content: center;
+ height: 100vh;
+}
+
+.leftSection {
+  margin-top: 90px;
+  width: 100%;
+  background: #fefdfd;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+}
+
+.loginHeader {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.loginHeader h2 {
+  font-size: 24px;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.formGroup {
+  width: 100%;
+  max-width: 300px;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.formGroup input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #333;
+  border-radius: 5px;
+}
+
+.formGroup a {
+  font-size: 12px;
+  position: absolute;
+  right: 0;
+  bottom: -18px;
+  text-decoration: none;
+  color: #333;
+}
+
+.loginBtn {
+  width: 9vw;
+  max-width: 300px;
+  padding: 7px;
+  background: #000;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.loginBtn:active{
+  background: blue;
+}
+
+.signupText {
+  margin-bottom: 10px;
+}
+
+.signupBtn {
+  width: 100%;
+  max-width: 300px;
+  padding: 10px;
+  background: #000;
+  color: #fff;
+  border: none;
+  border-radius: 25px;
+  margin-bottom: 10px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  max-width: 300px;
+  width: 100%;
+  margin: 10px 0;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #ccc;
+}
+
+.divider:not(:empty)::before {
+  margin-right: 0.5em;
+}
+.divider:not(:empty)::after {
+  margin-left: 0.5em;
+}
+
+.googleBtn {
+  width: 100%;
+  max-width: 300px;
+  padding: 10px;
+  background: #ddd;
+  color: #000;
+  border: none;
+  border-radius: 25px;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.terms {
+  margin-top: 30px;
+  font-size: 10px;
+  color: gray;
+}
+
+.rightSection {
+  
+  height: 120%;
+  width: 100%;
+  background: url("vini.jpg") center center/cover no-repeat;
+}
