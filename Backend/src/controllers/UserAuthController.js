@@ -1,7 +1,7 @@
 const { StatusCodes } = require("http-status-codes");
 const CustomError = require("../errors");
-const User = require("../models/user");
-const Token = require("../models/Token");
+const User = require("../models/User");
+const Token = require("../models/UserToken");
 const {
   attachCookiesToResponse,
   createTokenUser,
@@ -148,7 +148,7 @@ const forgotPassword = async (req, res) => {
     const origin = "http://localhost:3000";
 
     await sendResetPasswordEmail({
-      name: user.name,
+      name: user.username,
       email: user.email,
       token: passwordToken,
       origin,

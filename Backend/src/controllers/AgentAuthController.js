@@ -127,7 +127,7 @@ const login = async (req, res) => {
 };
 
 const logout = async (req, res) => {
-  await AgentToken.findOneAndDelete({ agent: req.user.userId });
+  await AgentToken.findOneAndDelete({ agent: req.user.agentId });
   res.cookie("accessToken", "logout", {
     httpOnly: true,
     expires: new Date(Date.now()),

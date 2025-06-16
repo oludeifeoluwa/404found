@@ -3,12 +3,20 @@ const validator = require("validator");
 const bcrypt = require("bcryptjs");
 
 const UserSchema = new mongoose.Schema({
+  username: {
+    type: String,
+    required: [true, "must provide a username"],
+    trim: true,
+    minlength: [3, "username must be at least 3 characters"],
+    maxlength: [50, "username cannott be more than 50 characters"],
+    unique: true,
+  },
   name: {
     type: String,
-    required: [true, "must provide name"],
+    required: [true, "must provide first name"],
     trim: true,
-    minlength: [3, "name cannot be more than 3 characters"],
-    maxlength: [50, "name cant be more than 50 characters"],
+    minlength: [3, "first name must be at least 3 characters"],
+    maxlength: [50, "first name cant be more than 50 characters"],
   },
   email: {
     type: String,
@@ -27,9 +35,19 @@ const UserSchema = new mongoose.Schema({
       "password cannot be less than 3 characters for security reasons",
     ],
   },
+  contact: {
+    type: String,
+    required: [true, "must provide contact info"],
+    validate: {
+      validator: function (v) {
+        return /^\d{11,20}$/.test(v);
+      },
+      message: "Contact must be between 11 to 20 digits",
+    },
+  },
   role: {
     type: String,
-    enum: ["admin", "user" , "agent"],
+    enum: ["admin", "user", "agent"],
     default: "user",
   },
   verificationToken: {
@@ -49,18 +67,20 @@ const UserSchema = new mongoose.Schema({
   },
 });
 
+// Pre-save hook to hash password and generate full name
 UserSchema.pre("save", async function () {
+    // Password hashing
   if (!this.isModified("password")) return;
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
+
+  // Full name generation
+  const nameParts = [this.firstName, this.middleName, this.lastName].filter(Boolean);
+  this.name = nameParts.join(" ");
 });
 UserSchema.methods.comparePassword = async function (candidatePassword) {
   const isMatch = await bcrypt.compare(candidatePassword, this.password);
   return isMatch;
 };
-
-// UserSchema.methods.createJWT = async function(){
-//     return jwt.sign({userId :this._id , name :this.name} , process.env.JWT_SECRET , {expiresIn : process.env.JWT_LIFETIME})
-// }
 
 module.exports = mongoose.model("User", UserSchema);

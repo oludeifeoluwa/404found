@@ -35,15 +35,20 @@ const AgentSchema = new mongoose.Schema({
     trim: true,
   },
   contact: {
-  type: String,
-  required: [true, "must provide contact info"],
-  validate: {
-    validator: function (v) {
-      return /^\d{11,20}$/.test(v);
+    type: String,
+    required: [true, "must provide contact info"],
+    validate: {
+      validator: function (v) {
+        return /^\d{11,20}$/.test(v);
+      },
+      message: "Contact must be between 11 to 20 digits",
     },
-    message: "Contact must be between 11 to 20 digits",
   },
-},
+  role: {
+    type: String,
+    enum: ["agent" , "admin"],
+    default: "agent",
+  },
   agentImage: {
     type: String,
     default: "/uploads/example.jpeg",
@@ -55,8 +60,13 @@ const AgentSchema = new mongoose.Schema({
   whatsapp: {
     type: String,
     required: false,
-    minlength: [11, "WhatsApp number cannot be less than 11 characters"],
-    maxlength: [20, "WhatsApp number cannot be more than 20 characters"],
+    validate: {
+      validator: function (v) {
+        return /^\d{11,20}$/.test(v);
+      },
+      message: "WhatsApp number must be between 11 to 20 digits",
+    }
+    
   },
   areasCovered: {
     type: [String],
@@ -84,10 +94,10 @@ const AgentSchema = new mongoose.Schema({
     type: Date,
   },
   verificationTokenExpires: {
-  type: Date,
-  default: () => Date.now() + 1000 * 60 * 60 * 24, // 24 hours
-}
-});
+    type: Date,
+    default: () => Date.now() + 1000 * 60 * 60 * 24, // 24 hours
+  },
+} , {timestamps:true});
 
 AgentSchema.pre("save", async function () {
   if (!this.isModified("password")) return;
@@ -99,4 +109,4 @@ AgentSchema.methods.comparePassword = async function (candidatePassword) {
   return isMatch;
 };
 
-module.exports = mongoose.model('Agent', AgentSchema);
+module.exports = mongoose.model("Agent", AgentSchema);

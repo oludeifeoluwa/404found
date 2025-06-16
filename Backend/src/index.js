@@ -17,6 +17,7 @@ const PORT = process.env.PORT || 3000;
 const connectDB = require('./database/connect');
 
 // router
+const universalAuthRouter = require('./routes/universalAuth')
 const userAuthRouter = require('./routes/userAuthRoute')
 const agentAuthRouter = require('./routes/agentAuthRoute')
 const userRouter = require('./routes/userRoutes')
@@ -36,7 +37,12 @@ app.use(
 );
 
 app.use(helmet());
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:3000", // Ife's frontend (Next.js dev server)
+    credentials: true, // Important for sending cookies
+  })
+);
 app.use(xss());
 app.use(mongoSanitize());
 
@@ -52,6 +58,7 @@ app.get('/api/v1' , (req,res)=>{
 
 app.use('/api/v1/auth/agent' , agentAuthRouter);
 app.use('/api/v1/auth/user' , userAuthRouter);
+app.use('/api/v1/auth' , universalAuthRouter);
 app.use('/api/v1/user' , userRouter);
 app.use('/api/v1/property' , propertyRouter)
 
