@@ -8,7 +8,7 @@ router = APIRouter()
 
 model = joblib.load("ml_models/loan_approval_model.model")
 
-@router.post("/loan_eligibility_predictor")
+@router.post("/loan_eligibility_predictor", status_code=201)
 async def predict_eligibility(data: LoanInputData):
     edu_map = {"graduate": 1, "not graduate": 0}
     self_emp_map = {"yes": 1, "no": 0}
@@ -45,9 +45,19 @@ async def predict_eligibility(data: LoanInputData):
                                            luxury_assets_value = data.luxury_assets_value,bank_asset_value = data.bank_asset_value,
                                            education = data.education, self_employed = data.self_employed, prediction = status(output)
                                            )
-    probs = model.predict_proba(input_array)[0][1]
+    probs = model.predict_proba(input_array)[0][0]
     await database.execute(query)
-    if output ==1: 
-        return {"loan_eligibility": "Approved, you are eligible for loan", "probability": f"{round(probs*100, 2)}%"}
-    else:
-        return {"loan_eligibility": "Not Approved, you are not eligible for loan"}
+    if output == 1:  # Approved
+        return {
+            "loan_eligibility": "Eligible",
+            "risk_level": "Low" if probs >= 0.8 else "Moderate",
+            "advice": "This applicant shows a high likelihood of repayment. You may consider offering standard or lower interest rates." if probs >= 0.8 else "Moderate approval probability. Adjust loan amount accordingly.",
+            "summary": "Eligible candidate. Verify all documents before proceeding."
+        }
+    else:  # Not Approved
+        return {
+            "loan_eligibility": "Not Eligible",
+            "risk_level": "High",
+            "advice": "This applicant has a low predicted ability to repay. Recommend applying for a lower loan amount if proceeding.",
+            "summary": "High risk. Lending is discouraged unless collateral is secured."
+        }
