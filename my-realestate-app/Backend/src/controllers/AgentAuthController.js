@@ -54,7 +54,6 @@ const verifyEmail = async (req, res) => {
       .json({ msg: error.details.map((details) => details.message) });
   }
   const { verificationToken, email } = value;
-
   const agent = await Agent.findOne({ email });
   if (!agent) {
     throw new CustomError.UnauthenticatedError("invalid credentials");
@@ -127,7 +126,7 @@ const login = async (req, res) => {
 };
 
 const logout = async (req, res) => {
-  await AgentToken.findOneAndDelete({ agent: req.user.userId });
+  await AgentToken.findOneAndDelete({ agent: req.user.agentId });
   res.cookie("accessToken", "logout", {
     httpOnly: true,
     expires: new Date(Date.now()),

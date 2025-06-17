@@ -7,6 +7,11 @@ const PropertySchema = new mongoose.Schema({
     trim: true,
     required: [true, "Property title is required"],
   },
+  description:{
+    type: String,
+    trim: true,
+    required: [true, "description is required"],
+  },
   type: {
     type: String,
     enum: ["apartment", "detached house", "duplex", "land", "commercial"],
@@ -58,6 +63,7 @@ const PropertySchema = new mongoose.Schema({
       "Ekiti",
       "Cross River",
       "Kogi",
+      "Lekki",
       "Plateau",
       "Kano",
       "Katsina",
@@ -74,6 +80,13 @@ const PropertySchema = new mongoose.Schema({
   country: {
     type: String,
     default: "Nigeria",
+  },
+  paidBy: {
+    id: { type: mongoose.Types.ObjectId, refPath: "paidBy.role" },
+    role: {
+      type: String,
+      enum: ["user", "agent"],
+    },
   },
   coordinates: {
     lat: { type: Number },
@@ -125,11 +138,10 @@ const PropertySchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  agent:{
+  agent: {
     type: mongoose.Schema.Types.ObjectId,
-    ref:'Agent',
-    required:[true,"must be registered as an agent"]
-  }
-  
+    ref: "Agent",
+    required: [true, "must be registered as an agent"],
+  },
 });
 module.exports = mongoose.model("Property", PropertySchema);
