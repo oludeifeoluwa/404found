@@ -7,16 +7,13 @@ const {
   updateProperty,
   deleteProperty,
 } = require("../controllers/propertyController");
-const { authenticateAgent } = require("../middleware/agentAuthMiddleware");
+const { authenticate } = require("../middleware/universalAuthMiddleware");
 
-router
-  .route("/")
-  .post(authenticateAgent, createProperty)
-  .get(getAllProperties);
+router.route("/").post(authenticate, createProperty).get(getAllProperties);
 router
   .route("/:id")
   .get(getSingleProperty)
-  .patch(authenticateAgent, updateProperty)
-  .delete(authenticateAgent, deleteProperty);
+  .patch(authenticate, updateProperty)
+  .delete(authenticate, deleteProperty);
 
 module.exports = router;

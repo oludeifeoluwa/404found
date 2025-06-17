@@ -4,10 +4,15 @@ const CustomError = require("../errors");
 const checkAgentPermissions = require("../utils/checkAgentPermissions");
 
 const createProperty = async (req, res) => {
-  req.body.agent = req.user.agentId;
+  const { id, role } = req.user;
+  if (role !== "agent") {
+    throw new CustomError.UnauthorizedError("Access Denied");
+  }
+  req.body.agent = req.user.id;
   const property = await Property.create(req.body);
   res.status(StatusCodes.CREATED).json({ property });
 };
+
 const getSingleProperty = async (req, res) => {
   const { id: propertyId } = req.params;
   const property = await Property.findOne({ _id: propertyId }).populate({
@@ -31,7 +36,7 @@ const getAllProperties = async (req, res) => {
 const updateProperty = async (req, res) => {
   const { id: propertyId } = req.params;
 
-  const property = await Property.findOne({ _id: propertyId })
+  const property = await Property.findOne({ _id: propertyId });
   if (!property) {
     throw new CustomError.NotFoundError(
       `no property with id ${propertyId} found`
@@ -48,7 +53,6 @@ const updateProperty = async (req, res) => {
     }
   );
   res.status(StatusCodes.OK).json({ property });
-
 };
 
 const deleteProperty = async (req, res) => {

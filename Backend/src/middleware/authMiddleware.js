@@ -25,19 +25,17 @@ const authenticateUser = async (req, res, next) => {
           payload: {user : payload.user},
           refreshToken: existingToken.refreshToken
       })
-      req.user = payload.user;
+      req.use = payload.user;
       next()
   } catch (error) {
       throw new CustomError.UnauthenticatedError('Authentication invalid')
   }
   };
   
-
-
 const authorizePermissions = (...roles)=>{
    return (req,res,next)=>{
     if(!roles.includes(req.user.role)){
-        throw new CustomError.UnauthorizedError("unauthorized to access this route")
+        throw new CustomError.UnauthorizedError("Access Denied")
     }
     next()
    }

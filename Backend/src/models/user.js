@@ -35,20 +35,45 @@ const UserSchema = new mongoose.Schema({
       "password cannot be less than 3 characters for security reasons",
     ],
   },
-  contact: {
-    type: String,
-    required: [true, "must provide contact info"],
-    validate: {
-      validator: function (v) {
-        return /^\d{11,20}$/.test(v);
-      },
-      message: "Contact must be between 11 to 20 digits",
-    },
-  },
   role: {
     type: String,
-    enum: ["admin", "user", "agent"],
+    enum: ["admin", "user"],
     default: "user",
+  },
+  city: {
+    type: String,
+    enum: [
+      "Abuja",
+      "Lagos",
+      "Edo",
+      "Ogun",
+      "Oyo",
+      "Imo",
+      "Anambara",
+      "Rivers",
+      "Enugu",
+      "Kaduna",
+      "Kwara",
+      "Nasarawa",
+      "Abia",
+      "Delta",
+      "Akwa Ibom",
+      "Osun",
+      "Ekiti",
+      "Cross River",
+      "Kogi",
+      "Plateau",
+      "Kano",
+      "Katsina",
+      "Bayelsa",
+      "Borno",
+      "Niger",
+    ],
+    required: [true, "City is required"],
+  },
+  state: {
+    type: String,
+    required: [true, "State is required"],
   },
   verificationToken: {
     type: String,
@@ -69,14 +94,14 @@ const UserSchema = new mongoose.Schema({
 
 // Pre-save hook to hash password and generate full name
 UserSchema.pre("save", async function () {
-    // Password hashing
+  // Password hashing
   if (!this.isModified("password")) return;
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
 
-  // Full name generation
-  const nameParts = [this.firstName, this.middleName, this.lastName].filter(Boolean);
-  this.name = nameParts.join(" ");
+  // // Full name generation
+  // const nameParts = [this.firstName, this.middleName, this.lastName].filter(Boolean);
+  // this.name = nameParts.join(" ");
 });
 UserSchema.methods.comparePassword = async function (candidatePassword) {
   const isMatch = await bcrypt.compare(candidatePassword, this.password);

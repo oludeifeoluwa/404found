@@ -54,7 +54,6 @@ const verifyEmail = async (req, res) => {
       .json({ msg: error.details.map((details) => details.message) });
   }
   const { verificationToken, email } = value;
-
   const agent = await Agent.findOne({ email });
   if (!agent) {
     throw new CustomError.UnauthenticatedError("invalid credentials");

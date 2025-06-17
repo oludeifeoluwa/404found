@@ -13,11 +13,9 @@ const { StatusCodes } = require("http-status-codes");
 
 const login = async (req, res) => {
   const { email, password, role } = req.body;
-
   if (!["agent", "user"].includes(role)) {
     return res.status(400).json({ msg: "Invalid role specified" });
   }
-
   const Model = role === "agent" ? Agent : User;
   const TokenModel = role === "agent" ? AgentToken : UserToken;
   const createToken = role === "agent" ? createTokenAgent : createTokenUser;
@@ -63,6 +61,28 @@ const login = async (req, res) => {
   res.status(200).json({ user: tokenPayload, role });
 };
 
+const logout = async (req, res) => {
+  const { id, role } = req.user;
+
+  const TokenModel = role === "agent" ? AgentToken : UserToken;
+
+  await TokenModel.findOneAndDelete({
+    [role]: id,
+  });
+
+  res.cookie("accessToken", "logout", {
+    httpOnly: true,
+    expires: new Date(Date.now()),
+  });
+
+  res.cookie("refreshToken", "logout", {
+    httpOnly: true,
+    expires: new Date(Date.now()),
+  });
+
+  res.status(StatusCodes.OK).json({ msg: "User logged out successfully" });
+};
+
 //   const logout = async (req, res) => {
 //     const { userId, role } = req.user;
 
@@ -85,4 +105,4 @@ const login = async (req, res) => {
 //     res.status(StatusCodes.OK).json({ msg: `${role} logged out` });
 //   };
 
-module.exports = { login };
+module.exports = { login , logout };

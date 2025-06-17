@@ -38,6 +38,8 @@ const AgentRegisterSchema = joi.object({
       linkedin: joi.string().uri().optional(),
     })
     .optional(),
+    experience: joi.number().optional()  
+
 });
 
 exports.registerValidator = validator(registerValidatorSchema);

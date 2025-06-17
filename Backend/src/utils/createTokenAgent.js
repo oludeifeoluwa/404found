@@ -1,5 +1,5 @@
 const createAgent = (agent) => {
-  return { name: agent.name, agentId: agent._id , role : agent.role};
+  return { username: agent.username, agentId: agent._id , role : agent.role};
 };
 
 module.exports = createAgent;
