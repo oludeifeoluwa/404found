@@ -1,7 +1,6 @@
 from pydantic import BaseModel
 
 class PriceInputData(BaseModel):
-    ...
     bedrooms: int
     bathrooms: int
     toilets: int

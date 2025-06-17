@@ -1,7 +1,8 @@
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
 
-from Routers.loan_predict import router as predict_router
+from Routers.loan_predict import router as loan_predict_router
+from Routers.price_predict import router as house_predict_router
 from database.config import connect_db, disconnect_db  
 
 from fastapi.middleware.cors import CORSMiddleware
@@ -31,4 +32,5 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-app.include_router(predict_router)
+app.include_router(loan_predict_router)
+app.include_router(house_predict_router)
