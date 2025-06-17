@@ -23,6 +23,18 @@ sqlalchemy.Column("id", sqlalchemy.Integer, primary_key=True, autoincrement=True
     sqlalchemy.Column("prediction", sqlalchemy.String)  # store ML output
 )
 
+HousePriceInfo_table = sqlalchemy.Table("house-price-info", metadata, 
+sqlalchemy.Column("id", sqlalchemy.Integer, primary_key=True, autoincrement=True),
+    sqlalchemy.Column("bedroom", sqlalchemy.Integer),
+    sqlalchemy.Column("bathroom", sqlalchemy.Integer),
+    sqlalchemy.Column("parking_space", sqlalchemy.Integer),
+    sqlalchemy.Column("toilets", sqlalchemy.Integer),
+    sqlalchemy.Column("title", sqlalchemy.String),  
+    sqlalchemy.Column("town", sqlalchemy.String),  
+    sqlalchemy.Column("state", sqlalchemy.String),
+    sqlalchemy.Column("output", sqlalchemy.Integer),  # store ML output
+)
+
 DATABASE_URL = os.environ.get("DATABASE_URL")
 if DATABASE_URL is None:
     raise ValueError("Database URL has not been set or is in accessible")
