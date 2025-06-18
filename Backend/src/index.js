@@ -3,6 +3,13 @@ require('express-async-errors')
 const express = require('express');
 const app = express();
 
+const {stripeWebhook} = require('./controllers/paymentController')
+
+app.post(
+  "/api/v1/payment/webhook",
+  express.raw({ type: "application/json" }), // required for Stripe
+  stripeWebhook
+);
 //packages
 const morgan = require('morgan')
 const cookieParser = require('cookie-parser')
@@ -22,10 +29,12 @@ const userAuthRouter = require('./routes/userAuthRoute')
 const agentAuthRouter = require('./routes/agentAuthRoute')
 const userRouter = require('./routes/userRoutes')
 const propertyRouter = require('./routes/propertyRouter')
+const paymentRouter = require('./routes/paymentRoute')
 
 //middleware
 const errorHandlerMiddleware = require('./middleware/error-handler');
 const notFoundMiddleware = require('./middleware/notFound')
+
 
   
 app.set('trust proxy', 1);
@@ -61,6 +70,7 @@ app.use('/api/v1/auth/user' , userAuthRouter);
 app.use('/api/v1/auth' , universalAuthRouter);
 app.use('/api/v1/user' , userRouter);
 app.use('/api/v1/property' , propertyRouter)
+app.use('/api/v1/payment' , paymentRouter)
 
 app.use(notFoundMiddleware)
 app.use(errorHandlerMiddleware);

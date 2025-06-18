@@ -42,6 +42,10 @@ const UserSchema = new mongoose.Schema({
   },
   city: {
     type: String,
+    required: [true, "City is required"],
+  },
+  state: {
+    type: String,
     enum: [
       "Abuja",
       "Lagos",
@@ -69,10 +73,6 @@ const UserSchema = new mongoose.Schema({
       "Borno",
       "Niger",
     ],
-    required: [true, "City is required"],
-  },
-  state: {
-    type: String,
     required: [true, "State is required"],
   },
   verificationToken: {

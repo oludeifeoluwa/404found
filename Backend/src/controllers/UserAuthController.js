@@ -15,7 +15,9 @@ const {
 const crypto = require("crypto");
 
 const register = async (req, res) => {
-  const { email, name, password } = req.body;
+  const { username , city , state ,email, name, password } = req.body;
+  console.log("Incoming body:", req.body);
+
   const { error, value } = registerValidator(req.body);
   if (error) {
     console.log(error);
@@ -27,16 +29,18 @@ const register = async (req, res) => {
   if (emailAlreadyExists) {
     throw new CustomError.BadRequest("Email already exists");
   }
-  // register first user as admin
-  const isFirstAccount = (await User.countDocuments({})) === 0;
-  const role = isFirstAccount ? "admin" : "user";
+  // // register first user as admin
+  // const isFirstAccount = (await User.countDocuments({})) === 0;
+  // const role = isFirstAccount ? "admin" : "user";
 
   const verificationToken = crypto.randomBytes(40).toString("hex");
   const user = await User.create({
     name,
     email,
     password,
-    role,
+    city,
+    username,
+    state,
     verificationToken,
   });
   const origin = "http://localhost:3000"; //frontend PORT must match this

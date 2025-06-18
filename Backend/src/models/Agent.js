@@ -63,6 +63,10 @@ const AgentSchema = new mongoose.Schema(
       default: "/uploads/example.jpeg",
     },
     city: {
+      type: String,  
+      required: [true, "City is required"],
+    },
+    state: {
       type: String,
       enum: [
         "Abuja",
@@ -91,10 +95,6 @@ const AgentSchema = new mongoose.Schema(
         "Borno",
         "Niger",
       ],
-      required: [true, "City is required"],
-    },
-    state: {
-      type: String,
       required: [true, "State is required"],
     },
     experience: {

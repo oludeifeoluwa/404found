@@ -8,6 +8,12 @@ const registerValidatorSchema = joi.object({
   name: joi.string().max(50).min(3).required(),
   password: joi.string().min(6).required(),
   email: joi.string().email().required(),
+  username: joi.string().required().messages({
+    "any.required": "Username is required",
+    "string.empty": "Username cannot be empty",
+  }),
+  city: joi.string().required(), 
+  state: joi.string().required(), 
 });
 
 const loginValidatorSchema = joi.object({
@@ -25,7 +31,8 @@ const AgentRegisterSchema = joi.object({
   email: joi.string().email().required(),
   password: joi.string().min(3).required(),
   agencyName: joi.string().min(2).max(50).required(),
-  contact: joi.string()
+  contact: joi
+    .string()
     .pattern(/^\d{11,20}$/)
     .required(),
   whatsapp: joi.string().min(11).max(20).optional(),
@@ -38,8 +45,7 @@ const AgentRegisterSchema = joi.object({
       linkedin: joi.string().uri().optional(),
     })
     .optional(),
-    experience: joi.number().optional()  
-
+  experience: joi.number().optional(),
 });
 
 exports.registerValidator = validator(registerValidatorSchema);
