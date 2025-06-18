@@ -120,7 +120,7 @@ try{
 
 
   return (
-
+ <div className="h-screen bg-gray-50 py-5 px-4 sm:px-6 lg:px-8 space-y-12">
       <form  onSubmit={handleRegister}>
       <div className=" bg-gray-50 py-5 px-4 sm:px-6 lg:px-8 space-y-12">
         <img src="/logo.png" width={80}/>
@@ -381,7 +381,7 @@ try{
                 </button>
               )}
               <button
-                type="button"
+                type="submit"
                 onClick={handleNext}
                 className={`${
                   step > 1 ? "w-2/3 ml-4" : "w-full"
@@ -395,5 +395,6 @@ try{
       </div>
     </div>
     </form>
+    </div>
   );
 }
