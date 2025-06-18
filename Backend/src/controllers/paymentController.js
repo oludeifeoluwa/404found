@@ -4,29 +4,72 @@ const {StatusCodes} = require('http-status-codes')
 const CustomError = require("../errors");
 const checkAgentPermissions = require("../utils/checkAgentPermissions");
 
-const buyProperty = async (req, res) => {
+const createCheckoutSession = async (req, res) => {
   const { propertyId } = req.body;
   const { id: userId, role } = req.user;
-  
+
   const property = await Property.findById(propertyId);
-  if (!property) {
-    throw new CustomError.NotFoundError('Property not found');
-  }
+  if (!property) throw new Error("Property not found");
 
-  const paymentIntent = await Stripe.paymentIntents.create({
-    amount: property.price * 100, // kobo
-    currency: 'ngn',
+  const session = await Stripe.checkout.sessions.create({
+    payment_method_types: ["card"],
+    mode: "payment",
+    line_items: [
+      {
+        price_data: {
+          currency: "ngn",
+          unit_amount: property.price * 100, // amount in kobo
+          product_data: {
+            name: property.title,
+            description: property.description || "Real estate property",
+          },
+        },
+        quantity: 1,
+      },
+    ],
     metadata: {
-      propertyId,
       userId,
-      role
+      propertyId,
+      role,
     },
+    success_url: `${process.env.CLIENT_URL}/payment/success`,
+    cancel_url: `${process.env.CLIENT_URL}/payment/failed`,
   });
 
-  res.status(StatusCodes.OK).json({
-    clientSecret: paymentIntent.client_secret,
-  });
+  res.status(200).json({ url: session.url });
 };
 
 
-module.exports = { buyProperty };
+const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
+
+const stripeWebhook = async (req, res) => {
+  const sig = req.headers["stripe-signature"];
+  let event;
+
+  try {
+    event = Stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+  } catch (err) {
+    console.error("Webhook Error:", err.message);
+    return res.status(400).send(`Webhook Error: ${err.message}`);
+  }
+
+  // Handle successful payment
+  if (event.type === "checkout.session.completed") {
+    const session = event.data.object;
+    const metadata = session.metadata;
+    const { userId, propertyId, role } = metadata;
+
+    // Mark property as paid
+
+    await Property.findByIdAndUpdate(propertyId, {
+      availabilityStatus: "sold",
+      paidBy: {
+        _id: userId,
+        role,
+      },
+    });
+  }
+
+  res.status(200).json({ received: true });
+};
+module.exports = { createCheckoutSession  , stripeWebhook};
